@@ -13,7 +13,7 @@ library(gapminder)
 gapminder
 ```
 
-# Import and tidy the HIV data
+# Import the HIV data
 
 ```{r}
 ```
