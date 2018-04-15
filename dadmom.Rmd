@@ -1,6 +1,6 @@
 ---
 title: "Tidying `dadmom`"
-author: "Your name"
+author: "Hoi-Ying Mak"
 output: github_document
 ---
 
@@ -20,7 +20,13 @@ dadmom
 # Tidied data
 
 ```{r}
-# write your code to tidy the data here
+# Use unite to combine the name and income variables into two categories - dad and mom. Then, mutate and separate the merged categories.
+dadmom %>%
+  unite(d, named, incd) %>%
+  unite(m, namem, incm) %>%
+  gather(d, m, key = type, value = category) %>%
+  separate(category, into = c("name", "income"))
+
 ```
 
 ## Session info

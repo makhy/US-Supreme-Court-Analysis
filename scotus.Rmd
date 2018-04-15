@@ -1,6 +1,6 @@
 ---
 title: "Exploring U.S. Supreme Court Decisions"
-author: "Your name"
+author: "Hoi-Ying Mak"
 output: github_document
 ---
 
@@ -20,43 +20,124 @@ scdbv_leg
 ## Combine the datasets
 
 ```{r}
+#To efficiently combine the character/numeric columns, I at first tried "mutate_all" to coerce all numeric variables into as.characters. But soon I realise it limits my ability to perform numeric calculations such as MajVotes - MinVotes in the subsequent question. After numerous trials and errors I found the most efficient method here http://stat545.com/block029_factors.html.
 # scdbv <- # add your code here
+scdbv_all <- rbind(scdbv_leg, scdbv_mod)
+scdbv_all
 ```
 
 ## Recode variables as you find necessary
 
 ```{r}
-
+#Create a new variable for margin votes. Then, select 10 variables I need for this assignment.
+scdbv <- scdbv_all %>%
+  mutate(margin = majVotes - minVotes) %>%
+  select(caseIssuesId, term, justice, justiceName, decisionDirection, majVotes, minVotes, margin, majority, chief, vote)
+scdbv
 ```
 
 ## What percentage of cases in each term are decided by a one-vote margin (i.e. 5-4, 4-3, etc.)
 
 ```{r}
-
+#Identify the total number of cases by term. Use mutate to create a new variable for the percent of one vote margin decisions.
+scdbv %>%
+  group_by(term) %>%
+  summarize(cases = n(), onevote = sum((margin == 1), na.rm = TRUE)) %>%
+  mutate(percentone = (onevote/cases)) %>%
+  ggplot(aes(term, percentone)) +
+  geom_line() +
+  scale_y_continuous(labels=scales::percent) +
+  theme_gray(base_size = 10) +
+  labs(title = "One Vote Margin Decisions",
+       subtitle = "Proportion in U.S. Supreme Court History",
+       x = "Term",
+       y = "Percent in Total Decisions")
 ```
 
 ## In each term he served on the Court, in what percentage of cases was Justice Antonin Scalia in the majority?
 
 ```{r}
-
+# Find the ID for Justice Scalia on the directory http://scdb.wustl.edu/documentation.php?var=justice. Then, create a new variable for the percent of Justice Scalia voting in the majority (vote ==1).
+scdbv %>%
+  filter(justice == "105") %>%
+  group_by(term) %>%
+  summarize(scalia_all = n(), majority = sum((vote == 1 & 3 & 5), na.rm = TRUE)) %>%
+  mutate(scalia_percent = (majority/scalia_all)) %>%
+  
+#Use the line graph to show the percentage of Justice Scalia's majority decisions throughout his term  
+  ggplot(aes(term,scalia_percent)) +
+  geom_line() +
+  scale_y_continuous(labels=scales::percent, limits = c(0,1)) +
+  theme_minimal(base_size = 10) +
+  labs(title = "Justice Scalia in the Majority",
+       x = "Term",
+       y = "Percent of Total Decisions")
+  
 ```
 
 ## Create a graph similar to above that compares the percentage for all cases versus non-unanimous cases (i.e. there was at least one dissenting vote)
 
 ```{r}
-
+#Use mutate to create two variables: "All_Decisions" and "Non_Unanimous_Decisions", which reflect the percentage of all cases and non-unanimous cases respectively
+scdbv %>%
+  filter(justice == "105") %>%
+  group_by(term) %>%
+  summarize(scalia_all = n(), scalia_non = sum((minVotes!=0), na.rm = TRUE), majority = sum((vote == 1 & 3 & 5), na.rm = TRUE), majority_non = sum((vote == 1 & 3 & 5 & minVotes!=0), na.rm = TRUE)) %>%
+  mutate(All_Decisions = (majority/scalia_all), Non_Unanmimous_Decisions = (majority_non/scalia_non)) %>%
+  select(term, All_Decisions, Non_Unanmimous_Decisions) %>%
+  gather(type, proportion, -term) %>%
+  
+#Plot the line graph, then refine the scale to percentage. Then, move the legend to the bottom and refine the text and color of it. http://www.sthda.com/english/wiki/ggplot2-legend-easy-steps-to-change-the-position-and-the-appearance-of-a-graph-legend-in-r-software
+ggplot(aes(term, proportion, color = type)) +
+  geom_line() +
+  scale_y_continuous(labels=scales::percent, limits = c(0,1)) +
+  theme_minimal(base_size = 9) +
+  theme(legend.position = "bottom", legend.title = element_blank(), legend.background = element_rect(fill="lightyellow", linetype="blank")) +
+  labs(title = "Justice Scalia in the Majority",
+       x = "Term",
+       y = "Percent of Total Decisions")
 ```
 
 ## In each term, what percentage of cases were decided in the conservative direction?
 
 ```{r}
+#Identify the total number of cases by year terms. Then, create a new variable for the percentage of conservative decisions (decisionDirection == 1). 
+scdbv %>%
+  group_by(term) %>%
+  summarize(cases = n(), conservative = sum(decisionDirection == 1, na.rm = TRUE)) %>%
+  mutate(percentcon = (conservative/cases)) %>%
 
+#Plot a line graph showing the percentage of conservative decisions throughout the U.S. Supreme Court's History. Refine the scale of y-axis to 0.7 so that the nuanced ups and downs are better captured.
+  ggplot(aes(term,percentcon)) +
+  geom_line() +
+  scale_y_continuous(labels=scales::percent, limits = c(0,0.7)) +
+  theme_minimal(base_size = 10) +
+  labs(title = "Conservative Decisions",
+       subtitle = "Percentage in U.S. Supreme Court History",
+       x = "Term",
+       y = "Percent of Total Decisions")
 ```
 
 ## The Chief Justice is frequently seen as capable of influencing the ideological direction of the Court. Create a graph similar to the one above that also incorporates information on who was the Chief Justice during the term.
 
 ```{r}
+#Similar to Q4, but this time include the variable chief in group_by.
+scdbv %>%
+  group_by(term, chief) %>%
+  summarize(cases = n(), conservative = sum(decisionDirection == 1, na.rm = TRUE)) %>%
+  mutate(percentcon = (conservative/cases)) %>%
+  select(term, chief, percentcon) %>%
 
+#Plot the same line graph in Q4, with the clustering effect by Chief Justices' terms in color. Modify the size of the legend so that it can be properly shown. 
+  ggplot(aes(term, percentcon)) +
+  geom_line(aes(colour = factor(chief)))+
+  scale_y_continuous(labels=scales::percent, limits = c(0,1)) +
+  theme_minimal(base_size = 10) +
+  theme(legend.key.size = unit(0.25, "cm"), legend.title = element_blank())+
+  labs(title = "U.S. Supreme Court",
+       subtitle = "Percent of Conservative Decisions in Chief Justices' Terms",
+       x = "Term",
+       y = "Percent of Total Decisions")
 ```
 
 ## Session info
