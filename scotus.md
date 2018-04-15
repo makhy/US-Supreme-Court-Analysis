@@ -10,14 +10,14 @@ Get the data
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─── tidyverse 1.2.1 ──
+    ## ── Attaching packages ────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
     ## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -234,6 +234,7 @@ What percentage of cases in each term are decided by a one-vote margin (i.e. 5-4
 ``` r
 #Identify the total number of cases by term. Use mutate to create a new variable for the percent of one vote margin decisions.
 scdbv %>%
+  distinct(caseIssuesId, .keep_all = TRUE) %>%
   group_by(term) %>%
   summarize(cases = n(), onevote = sum((margin == 1), na.rm = TRUE)) %>%
   mutate(percentone = (onevote/cases)) %>%
@@ -253,12 +254,12 @@ In each term he served on the Court, in what percentage of cases was Justice Ant
 ------------------------------------------------------------------------------------------------------------
 
 ``` r
-# Find the ID for Justice Scalia on the directory http://scdb.wustl.edu/documentation.php?var=justice. Then, create a new variable for the percent of Justice Scalia voting in the majority (vote ==1).
+# Find the ID for Justice Scalia on the directory http://scdb.wustl.edu/documentation.php?var=justice. Then, create a new variable for the percent of Justice Scalia voting in the majority (majority == 2).
 scdbv %>%
   filter(justice == "105") %>%
   group_by(term) %>%
-  summarize(scalia_all = n(), majority = sum((vote == 1 & 3 & 5), na.rm = TRUE)) %>%
-  mutate(scalia_percent = (majority/scalia_all)) %>%
+  summarize(scalia_all = n(), majorityy = sum((majority == 2), na.rm = TRUE)) %>%
+  mutate(scalia_percent = (majorityy/scalia_all)) %>%
   
 #Use the line graph to show the percentage of Justice Scalia's majority decisions throughout his term  
   ggplot(aes(term,scalia_percent)) +
@@ -280,8 +281,8 @@ Create a graph similar to above that compares the percentage for all cases versu
 scdbv %>%
   filter(justice == "105") %>%
   group_by(term) %>%
-  summarize(scalia_all = n(), scalia_non = sum((minVotes!=0), na.rm = TRUE), majority = sum((vote == 1 & 3 & 5), na.rm = TRUE), majority_non = sum((vote == 1 & 3 & 5 & minVotes!=0), na.rm = TRUE)) %>%
-  mutate(All_Decisions = (majority/scalia_all), Non_Unanmimous_Decisions = (majority_non/scalia_non)) %>%
+  summarize(scalia_all = n(), scalia_non = sum((minVotes!=0), na.rm = TRUE), majorityy = sum((majority == 2), na.rm = TRUE), majorityy_non = sum((majority == 2 & minVotes!=0), na.rm = TRUE)) %>%
+  mutate(All_Decisions = (majorityy/scalia_all), Non_Unanmimous_Decisions = (majorityy_non/scalia_non)) %>%
   select(term, All_Decisions, Non_Unanmimous_Decisions) %>%
   gather(type, proportion, -term) %>%
   
@@ -304,6 +305,7 @@ In each term, what percentage of cases were decided in the conservative directio
 ``` r
 #Identify the total number of cases by year terms. Then, create a new variable for the percentage of conservative decisions (decisionDirection == 1). 
 scdbv %>%
+  distinct(caseIssuesId, .keep_all = TRUE) %>%
   group_by(term) %>%
   summarize(cases = n(), conservative = sum(decisionDirection == 1, na.rm = TRUE)) %>%
   mutate(percentcon = (conservative/cases)) %>%
@@ -327,6 +329,7 @@ The Chief Justice is frequently seen as capable of influencing the ideological d
 ``` r
 #Similar to Q4, but this time include the variable chief in group_by.
 scdbv %>%
+  distinct(caseIssuesId, .keep_all = TRUE) %>%
   group_by(term, chief) %>%
   summarize(cases = n(), conservative = sum(decisionDirection == 1, na.rm = TRUE)) %>%
   mutate(percentcon = (conservative/cases)) %>%
@@ -362,7 +365,7 @@ devtools::session_info()
     ##  language (EN)                        
     ##  collate  en_US.UTF-8                 
     ##  tz       America/Chicago             
-    ##  date     2018-04-14
+    ##  date     2018-04-15
 
     ## Packages -----------------------------------------------------------------
 

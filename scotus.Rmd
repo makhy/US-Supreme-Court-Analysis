@@ -58,7 +58,7 @@ scdbv %>%
 ## In each term he served on the Court, in what percentage of cases was Justice Antonin Scalia in the majority?
 
 ```{r}
-# Find the ID for Justice Scalia on the directory http://scdb.wustl.edu/documentation.php?var=justice. Then, create a new variable for the percent of Justice Scalia voting in the majority (vote ==1).
+# Find the ID for Justice Scalia on the directory http://scdb.wustl.edu/documentation.php?var=justice. Then, create a new variable for the percent of Justice Scalia voting in the majority (majority == 2).
 scdbv %>%
   filter(justice == "105") %>%
   group_by(term) %>%
