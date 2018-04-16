@@ -12,14 +12,14 @@ Get the data
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.4
     ## ✔ tidyr   0.8.0     ✔ stringr 1.3.0
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ───────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -41,23 +41,23 @@ Tidied data
 ===========
 
 ``` r
-# Use unite to combine the name and income variables into two categories - dad and mom. Then, mutate and separate the merged categories.
+# Use unite to combine the name and income variables into two categories - dad and mom. Then, mutate and separate the merged cells back into name and income columns.
 dadmom %>%
   unite(d, named, incd) %>%
   unite(m, namem, incm) %>%
-  gather(d, m, key = type, value = category) %>%
-  separate(category, into = c("name", "income"))
+  gather(d, m, key = gender, value = name_in) %>%
+  separate(name_in, into = c("name", "income"))
 ```
 
     ## # A tibble: 6 x 4
-    ##   famid type  name  income
-    ##   <dbl> <chr> <chr> <chr> 
-    ## 1    1. d     Bill  30000 
-    ## 2    2. d     Art   22000 
-    ## 3    3. d     Paul  25000 
-    ## 4    1. m     Bess  15000 
-    ## 5    2. m     Amy   18000 
-    ## 6    3. m     Pat   50000
+    ##   famid gender name  income
+    ##   <dbl> <chr>  <chr> <chr> 
+    ## 1    1. d      Bill  30000 
+    ## 2    2. d      Art   22000 
+    ## 3    3. d      Paul  25000 
+    ## 4    1. m      Bess  15000 
+    ## 5    2. m      Amy   18000 
+    ## 6    3. m      Pat   50000
 
 Session info
 ------------
@@ -76,7 +76,7 @@ devtools::session_info()
     ##  language (EN)                        
     ##  collate  en_US.UTF-8                 
     ##  tz       America/Chicago             
-    ##  date     2018-04-14
+    ##  date     2018-04-15
 
     ## Packages -----------------------------------------------------------------
 

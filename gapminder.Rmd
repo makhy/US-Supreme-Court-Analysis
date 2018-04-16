@@ -23,7 +23,7 @@ gapminder
 # What is the relationship between HIV prevalence and life expectancy?
 
 ```{r}
-#Use geom_point and geom_smooth to show the cases and trend simultaneously. 
+#Use left join instead of inner join because requiring HIV rate data to have match for all variables in gapminder will result in a loss of valable observations. Use geom_point and geom_smooth to show the cases and trend simultaneously. 
 (hiv_life <- left_join(gapminder, hiv)) %>%
   ggplot(aes(hivRate, lifeExp)) +
   geom_point() +

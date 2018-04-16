@@ -20,13 +20,12 @@ dadmom
 # Tidied data
 
 ```{r}
-# Use unite to combine the name and income variables into two categories - dad and mom. Then, mutate and separate the merged categories.
+# Use unite to combine the name and income variables into two categories - dad and mom. Then, mutate and separate the merged cells back into name and income columns.
 dadmom %>%
   unite(d, named, incd) %>%
   unite(m, namem, incm) %>%
-  gather(d, m, key = type, value = category) %>%
-  separate(category, into = c("name", "income"))
-
+  gather(d, m, key = gender, value = name_in) %>%
+  separate(name_in, into = c("name", "income"))
 ```
 
 ## Session info
