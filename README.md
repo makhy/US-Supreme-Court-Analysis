@@ -1,4 +1,4 @@
-# US Supreme Court Analysis
+# U.S. Supreme Court Analysis
 
 The [U.S. Supreme Court (SCOTUS) database](http://scdb.wustl.edu) contains myriad details on the judges' decisions since the formation of the court in 1791. 
 
