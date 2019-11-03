@@ -1,15 +1,12 @@
-# Homework 03: Exploring and Wrangling Data
+# Analysis on the US Supreme Court Data
 
-See detailed instructions for this homework assignment [here](http://cfss.uchicago.edu/hw03-wrangle-data.html).
+The U.S. Supreme Court (SCOTUS) database contains myriad details on the judges' decisions since the formation of the court in 1791. 
 
-Your assignment should be submitted as three RMarkdown documents. Make sure you've read the chapter on [R Markdown](http://r4ds.had.co.nz/r-markdown.html) so you understand how to properly use these files.
+In this repository, I use R packages to mine into the database. In particular, I built charts that visualise the following:
 
-For your benefit, I have provided starter RMarkdown documents for each part of the homework. You should not need to modify the starter code, merely add on to it. In the [`demo`](demo/) folder I have included some example solutions:
+* 1) The percentage of SCOTUS cases that were decided by a one vote margin
+* 2) The percentage of Justice Scalia's majority decisions throughout his term
+* 3) The percentage of conservative decisions throughout the SCOTUS's history
+* 4) The correlation between the Chief Justices and the ideological direction of the SCOTUS in their terms
 
-* [Tidying `dadmom` solution](demo/dadmom_solution.md)
-* [`gapminder` solution](demo/gapminder_solution.md)
-* [SCOTUS solution](demo/scotus_solution.md)
-
-These files do not contain any of the code necessary to complete the homework, but do show you output from R for potential solutions. Your solutions do not need to perfectly replicate these tables and graphs, but are a good starting point.
-
-Follow instructions on [homework workflow](https://uc-cfss.github.io/hw00_homework_guidelines.html#homework_workflow) to submit your homework. As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.
+This repository was written and submitted as part of the [assignment 03] (http://cfss.uchicago.edu/hw03-wrangle-data.html) for the [Computing for the Social Sciences class at Uchicago] (https://cfss.uchicago.edu).
