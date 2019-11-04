@@ -10,3 +10,5 @@ In this repository, I used R to mine into the database and built charts that vis
 * The correlation between the Chief Justices and the ideological direction of the SCOTUS in their terms
 
 This repository was written and submitted as part of the [assignment 03](http://cfss.uchicago.edu/hw03-wrangle-data.html) for the [Computing for the Social Sciences class](https://cfss.uchicago.edu) at U Chicago.
+
+![](Onevote.png)
